@@ -1,0 +1,249 @@
+<html>
+<head>
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .hero {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.4)), url("{{ url_for('static', filename='images/pro.jpg') }}");
+            background-position:fixed;
+            background-size:cover;
+            position:absolute;
+         }
+        .form-box {
+            border: 2px solid grey;
+            width: 380px;
+            height: 490px;
+            margin: 6% auto;
+            background: transparent 20px solid lightsalmon ; /* White with 80% opacity */
+            padding: 20px;
+            background-color: #e5a320;
+            opacity: 1;
+            transition: cubic-bezier(0.175,1.885,1.32,2.654);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(182, 5, 5, 0.1);
+            position: relative;
+            box-shadow: 31px 15px 150px 3px rgba(19,246,240,0.75);
+            -webkit-box-shadow: 31px 15px 150px 3px rgba(19,246,240,0.75);
+            -moz-box-shadow: 31px 15px 150px 3px rgba(19,246,240,0.75);
+        }
+
+        .button-box {
+            width: 220px;
+            margin: 35px auto;
+            position: relative;
+            box-shadow: 0 0 20px 9px #ff61241f;
+            border-radius: 30px;
+        }
+
+        .toggle-btn {
+            padding: 10px 30px;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            outline: none;
+            position: relative;
+        }
+
+        #btn {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 110px;
+            height: 100%;
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            border-radius: 30px;
+            transition: .5s;
+        }
+
+        .social-icons {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .social-icons img {
+            width: 30px;
+            margin: 0 12px;
+            box-shadow: 0 0 20px 0 #7f7f7f3d;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .input-group {
+            top: 200px;
+            position: absolute;
+            width: 280px;
+            transition: .5s;
+            text-align: center;
+        }
+
+        .input-field {
+            width: 60%;           /* Slightly smaller width */
+            padding: 20px 0;
+            margin: 5px 0;
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            font-size: 14px;       /* Smaller text size */
+            border-bottom: 1px solid #999;
+            outline: none;
+            background: transparent;
+        }
+
+        .submit-btn {
+            width: 85%;
+            padding: 10px 30px;
+            cursor: pointer;
+            display: block;
+            margin: auto;
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            border: 0;
+            outline: none;
+            border-radius: 30px;
+        }
+
+        .check-box {
+            margin-top: 15px;
+            transform: scale(1.2);
+            margin-right: 10px;
+            color: #10ffab;
+            font-size:20px;
+        }
+
+        span {
+            color: #555;
+            font-size: 14px;
+            position: relative;
+            bottom: 0;
+        }
+
+        #login, #register {
+            position: absolute;
+            width: 100%;
+            transition: .5s;
+        }
+
+        #register {
+            display: none; /* Hide sign-up form initially */
+        }
+
+        /* New CSS for the sign-in link */
+        .sign-in-link {
+            display: block;
+            margin-top: 15px;
+            color: #007BFF; /* Bootstrap primary color for links */
+            text-decoration: none;
+        }
+
+        .background {
+  position: relative;
+}
+
+.pencil-link {
+  position: absolute;
+  top: 380px; /* Adjust this value to match the pencil's position */
+  left: 100px; /* Adjust this value to match the pencil's position */
+  width: 50px; /* Adjust width to cover the pencil area */
+  height: 50px; /* Adjust height to cover the pencil area */
+  cursor: pointer;
+  z-index: 10; /* Make sure it sits on top of other elements */
+}
+
+
+   
+    </style>
+</head>
+<body>
+    <div class="hero">
+        
+
+        <div class="background">
+            <!-- Existing content of the page -->
+            
+            <!-- Pencil clickable area -->
+            <a href="{{url_for('adan')}}" class="pencil-link" title="Click to go to the new page">   Click karo             </a>
+          </div>
+          
+
+        
+        <div class="form-box">
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+            <div class="button-box">
+                <div id="btn"></div>
+                <button class="toggle-btn" onclick="showLogin()">Log In</button>
+                <button class="toggle-btn" onclick="showRegister()">Sign In</button>
+            </div>
+
+            <!-- Social Icons inside the form box -->
+            <div class="social-icons">
+                <a href="{{url_for('facebook')}}"><img src="{{ url_for('static', filename='images/fb.png') }}" alt="facebook"></a>
+                <a href="{{url_for('googl')}}"><img src="{{ url_for('static', filename='images/gp.png') }}" alt="twitter"></a>
+                <a href="{{url_for('twitter')}}"><img src="{{ url_for('static', filename='images/tw.png') }}" alt="Google"></a>
+            </div>
+
+            <form id="login" class="input-group" action="{{ url_for('login') }}" method="POST">
+                <input type="text" class="input-field" name="user_id" placeholder="User Id" required>
+                <input type="password" class="input-field" name="password" placeholder="Password" required>
+                <br><input type="checkbox" class="check-box"><span style="color: #10ffab; text-decoration: none;font-size:20px;">Remember me</span><br>
+                <br><button type="submit" class="submit-btn">Log in</button>
+                <div style="width: 93%; text-align: right; margin-top: 10px;">
+                    <a href="{{ url_for('tryotp') }}" style="color: #10ffab; text-decoration: none;font-size:20px;">Forgot Password?</a>
+                </div>
+                
+            </form>
+            
+
+        
+<!-- Sign In form --> 
+<form id="register" class="input-group" action="{{ url_for('register') }}" method="POST">
+    <input type="text" class="input-field" name="uid" placeholder="User Id" required>
+    <input type="password" class="input-field" name="passw" placeholder="Password" required>
+    <input type="password" class="input-field" name="confirm_pass" placeholder="Confirm Password" required><br>
+    <input type="checkbox" class="check-box" required><span>I agree to the terms & conditions</span><br>
+    <br>
+    <button type="submit" class="submit-btn">Sign In</button>
+    <br>
+    <span style="display: block; text-align: center; margin-top: 10px;">
+        Is it your first time? <a href="{{ url_for('signup') }}" style="color: #ff105f; text-decoration: none;">Sign Up</a>
+    </span>
+</form>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        var loginForm = document.getElementById("login");
+        var registerForm = document.getElementById("register");
+        var toggleBtn = document.getElementById("btn");
+    
+        function showLogin() {
+            loginForm.style.display = "block";
+            registerForm.style.display = "none";
+            toggleBtn.style.left = "0";
+        }
+    
+        function showRegister() {
+            loginForm.style.display = "none";
+            registerForm.style.display = "block";
+            toggleBtn.style.left = "110px";
+        }
+    </script>
+    
+</body>
+</html>

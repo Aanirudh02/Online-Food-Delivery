@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .container, .otp-dialog {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            width: 300px;
+        }
+        .otp-dialog {
+            display: none;
+        }
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="emailContainer">
+    <h2>Enter Email</h2>
+    <input type="email" id="emailInput" placeholder="Enter your email" required>
+    <button onclick="send_OTP()">Send OTP</button>
+</div>
+
+<div class="otp-dialog" id="otpDialog">
+    <h2>Verify OTP</h2>
+    <input type="text" id="otpInput" placeholder="Enter the 6-digit OTP" maxlength="6">
+    <button onclick="ver_Otp()">Verify</button>
+    <p class="message" id="otpMessage"></p>
+</div>
+
+<script>
+    async function send_OTP() {
+        const email = document.getElementById('emailInput').value;
+
+        if (email) {
+            const response = await fetch('/for_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                document.getElementById('emailContainer').style.display = 'none';
+                document.getElementById('otpDialog').style.display = 'block';
+            } else {
+                alert(result.message);
+            }
+        } else {
+            alert("Please enter a valid email address.");
+        }
+    }
+
+    async function ver_Otp() {
+        const otp = document.getElementById('otpInput').value;
+
+        if (otp) {
+            const response = await fetch('/veri_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ otp })
+            });
+
+            const result = await response.json();
+            const otpMessage = document.getElementById('otpMessage');
+            otpMessage.textContent = result.message;
+            otpMessage.style.color = result.status === 'success' ? 'green' : 'red';
+
+            // Redirect on successful verification
+            if (result.status === 'success') {
+                window.location.href = '{{url_for('shoo')}}'; 
+            }
+        } else {
+            alert("Please enter the OTP.");
+        }
+    }
+</script>
+
+</body>
+</html>

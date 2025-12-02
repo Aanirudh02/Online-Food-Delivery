@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Display</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <style>
+        /* Styles remain the same as in your original code */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .cart-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: darkred;
+        }
+
+        #cart-modal {
+            display: none;
+        }
+
+        
+
+        .food-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .food-item {
+            width: 200px;
+            height: 450px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .food-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            margin: 10px 0;
+            border-radius: 50%;
+        }
+
+        .cart-items {
+            margin: 10px 0;
+        }
+
+        .total-price {
+            font-weight: bold;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: #ff6347;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6347;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background-color: #ff4500;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search food..." aria-label="Search food">
+            <button onclick="searchFood()">Search</button>
+        </div>
+        <div class="shopping" onclick="showCartModal()">
+            <img src="{{ url_for('static', filename='images/shopping.svg') }}" alt="Shopping Cart">
+            <span class="quantity">0</span> <!-- Shows number of items in the cart -->
+        </div>
+        
+    </div>
+
+    <div id="food-container" class="food-container">
+        {% for item in food_items %}
+        <div class="food-item">
+            <img src="data:image/png;base64,{{ item.image }}" alt="Food Image">
+            <span><strong>{{ item.name }}</strong></span>
+            <span>Price: Rs{{ item.price }}</span>
+            {% if item.discount %}
+            <span>Discount: {{ item.discount }}%</span>
+            <span>Discounted Price: Rs{{ item.discounted_price }}</span>
+            {% endif %}
+            <span>Rating: {{ item.rating }} / 5</span>
+            <button class="add-to-cart-btn" onclick="addToCart('{{ item.name }}', {{ item.discounted_price or item.price }})">Add to cart</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Cart Modal -->
+     <!-- Cart Modal -->
+<div id="cart-modal" class="cart-modal">
+    <h2>Your Cart</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ccc; padding: 10px;">Item</th>
+                <th style="border: 1px solid #ccc; padding: 10px;">Price</th>
+                <th style="border: 1px solid #ccc; padding: 10px;">Quantity</th>
+                <td>
+                    <button onclick="decrementQuantity('${item.name}')">-</button>
+                    <button onclick="incrementQuantity('${item.name}')">+</button>
+                </td>
+                <th style="border: 1px solid #ccc;padding:5px;">
+                    <button onclick="viewBill()">View Bill</button>
+                </th>                
+            </tr>
+        </thead>
+        <tbody id="cart-items"></tbody>
+    </table>
+    <div id="cart-total" style="margin-top: 10px;"></div>
+    <button onclick="closeCart()">Close</button>
+</div>
+
+    <script>
+        let cart = []; // Initialize the cart array
+    
+        function addToCart(name, price) {
+            const existingItem = cart.find(item => item.name === name); // Check if the item already exists
+    
+            if (existingItem) {
+                existingItem.quantity += 1; // Increment quantity if item already in cart
+            } else {
+                cart.push({ name: name, price: price, quantity: 1 }); // Add new item with quantity 1
+            }
+    
+            updateCart(); // Update cart display
+            updateCartQuantity(); // Update cart quantity display
+            showCartModal(); // Show cart after adding an item
+        }
+    
+        function showCartModal() {
+            document.getElementById('cart-modal').style.display = 'block';
+        }
+    
+        function closeCart() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+        function updateCart() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = ''; // Clear current cart items
+
+    let total = 0;
+    cart.forEach(item => {
+        const row = document.createElement('tr'); // Create a new row
+
+        // Create cells for item name, price, and quantity
+        const nameCell = document.createElement('td');
+        nameCell.innerText = item.name;
+        nameCell.style.border = '1px solid #ccc';
+        nameCell.style.padding = '10px';
+
+        const priceCell = document.createElement('td');
+        priceCell.innerText = `$${item.price.toFixed(2)}`; // Format price to 2 decimal places
+        priceCell.style.border = '1px solid #ccc';
+        priceCell.style.padding = '10px';
+
+        const quantityCell = document.createElement('td');
+        quantityCell.style.border = '1px solid #ccc';
+        quantityCell.style.padding = '10px';
+
+        // Add increment and decrement buttons
+        quantityCell.innerHTML = `
+            <button onclick="decrementQuantity('${item.name}')">-</button>
+            ${item.quantity}
+            <button onclick="incrementQuantity('${item.name}')">+</button>
+        `;
+
+        // Append cells to the row
+        row.appendChild(nameCell);
+        row.appendChild(priceCell);
+        row.appendChild(quantityCell);
+
+        // Append row to the cart items container
+        cartItemsContainer.appendChild(row);
+
+        total += item.price * item.quantity; // Calculate total based on quantity
+    });
+
+    // Add total price to the cart
+    const totalElement = document.getElementById('cart-total');
+    totalElement.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`; // Show total
+}
+
+        
+    
+    
+        function updateCartQuantity() {
+            const quantityDisplay = document.querySelector('.quantity');
+            quantityDisplay.innerText = cart.length; // Set quantity to the length of the cart (number of unique items)
+        }
+
+                   // Increment item quantity
+function incrementQuantity(name) {
+    const item = cart.find(item => item.name === name);
+    if (item) {
+        item.quantity += 1; // Increase quantity for the specific item
+        updateCart(); // Update the cart display
+    }
+}
+
+// Decrement item quantity
+function decrementQuantity(name) {
+    const item = cart.find(item => item.name === name);
+    if (item) {
+        if (item.quantity > 1) {
+            item.quantity -= 1; // Decrease quantity for the specific item
+        } else {
+            cart = cart.filter(cartItem => cartItem.name !== name); // Remove item from cart if quantity is 1
+        }
+        updateCart(); // Update the cart display
+    }
+}
+
+function viewBill() {
+    // Prepare cart data to send to the server
+    const cartData = JSON.stringify(cart); // Convert cart array to JSON
+
+    // Redirect to the bill page with cart data in the URL
+    window.location.href = `/bill?cart=${encodeURIComponent(cartData)}`;
+}
+
+
+
+        
+
+    
+        // Search functionality
+        function searchFood() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const foodItems = document.getElementsByClassName('food-item');
+            for (let i = 0; i < foodItems.length; i++) {
+                const itemName = foodItems[i].getElementsByTagName('span')[0].innerText.toLowerCase();
+                if (itemName.includes(searchTerm)) {
+                    foodItems[i].style.display = '';
+                } else {
+                    foodItems[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+
+
+</body>
+</html>

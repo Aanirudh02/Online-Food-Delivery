@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0; /* Light grey background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container Design */
+        .container {
+            background-color: white;
+            padding: 2rem 3rem; /* Added padding for better spacing */
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06); /* Subtle shadow */
+            max-width: 450px; /* More narrow and professional */
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        /* Headings and Paragraph */
+        h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666; /* Softer grey for descriptions */
+            margin-bottom: 1rem;
+        }
+
+        /* Input Fields Styling */
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.85rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #333;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #1a73e8; /* Focus border */
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Password Info Section */
+        .password-info {
+            font-size: 12px;
+            color: #888;
+            background: #f7f7f7;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .strength {
+            font-weight: bold;
+            color: #43a047;
+        }
+
+        /* Button Styling */
+        .button {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #1663c7;
+        }
+
+        /* Footer Links */
+        footer {
+            font-size: 12px;
+            color: #5f6368;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Icon for password visibility toggle */
+        .icon {
+            position: relative;
+            cursor: pointer;
+            margin-left: -30px;
+            margin-top: -35px;
+            float: right;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                max-width: 90%;
+            }
+        }
+
+
+
+        /* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Black with transparency */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content p {
+    margin-bottom: 1rem;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #888;
+}
+
+.close:hover {
+    color: #333;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Password Reset</h2>
+        <p>Please choose a secure password and don't use it for any other account.</p>
+
+
+<form method="POST" action="{{ url_for('reset') }}">
+    <label for="u_id">User ID:</label>
+    <input type="text" id="u_id" name="u_id" required><br>
+
+    <label for="pasw">New Password:</label>
+    <input type="password" id="pasw" name="pasw" required><br>
+
+    <label for="confm">Confirm Password:</label>
+    <input type="password" id="confm" name="confm" required><br>
+
+    <input type="submit" value="Reset Password">
+</form>
+
+        <footer>
+            <a href="#">Privacy</a> | 
+            <a href="#">Terms</a> | 
+            <a href="#">Help</a> | 
+            <a href="#">About</a>
+        </footer>
+
+
+    
+<div id="modal-privacy" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-privacy">&times;</span>
+        <p>
+            <h1 style="font-size: 22px; color: #333; text-align: center; margin-bottom: 15px;">Privacy Guidelines for Forgot Password</h1>
+            <ol style="font-size: 16px; line-height: 1.5; margin: 0; padding-left: 20px; list-style-type: decimal;">
+                <li style="margin-bottom: 10px;">Always verify the user's identity before initiating a password reset.</li>
+                <li style="margin-bottom: 10px;">Use secure, encrypted methods for sending password reset links.</li>
+                <li style="margin-bottom: 10px;">Limit the number of password reset requests to prevent abuse.</li>
+                <li style="margin-bottom: 10px;">Never display or send passwords in plain text.</li>
+                <li style="margin-bottom: 10px;">Require users to answer security questions if implemented.</li>
+                <li style="margin-bottom: 10px;">Inform users about suspicious password reset requests via email.</li>
+                <li style="margin-bottom: 10px;">Encourage users to use strong, unique passwords for their accounts.</li>
+                <li style="margin-bottom: 10px;">Allow users to revoke password reset links that they did not request.</li>
+                <li style="margin-bottom: 10px;">Regularly review and update security protocols related to password resets.</li>
+                <li style="margin-bottom: 10px;">Educate users about phishing attacks and the importance of account security.</li>
+            </ol>
+        </p>
+    </div>
+</div>
+
+<!-- Modal Structure for Terms of Service -->
+<div id="modal-terms" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-terms">&times;</span>
+        <p>
+
+            <ol>
+                <li>By requesting a password reset, you confirm that you are the account owner or an authorized user.</li>
+            <li>We will send a password reset link to your registered email address or mobile number for verification purposes.</li>
+            <li>It is your responsibility to ensure that your contact details are up-to-date.</li>
+            <li>You must not share the reset link with anyone. Any unauthorized use of your account is your responsibility.</li>
+            <li>For security reasons, the reset link will expire after a specified time (e.g., 15 minutes).</li>
+            <li>If your reset link has expired, you will need to request a new one through the forgot password page.</li>
+            <li>We may block access to your account if suspicious activity is detected during the password reset process.</li>
+            <li>If you are unable to access your registered email or mobile number, contact support for further assistance.</li>
+            <li>Multiple failed password reset attempts may temporarily lock your account for security reasons.</li>
+            <li>We are not responsible for any loss or damage arising from unauthorized access to your account due to password reset issues.</li>
+            <li>You agree to use a strong password and keep it confidential to protect your account.</li>
+            <li>Any changes made to your password will be logged for security purposes.</li>
+            <li>We reserve the right to modify or discontinue the password reset feature without prior notice.</li>
+            <li>By proceeding with the password reset, you acknowledge that you have read and agree to these terms and conditions.</li>
+            <li>If you have any questions or concerns, please contact our support team for assistance.</li>
+            </ol>
+        </p>
+    </div>
+</div>
+
+<!-- Modal Structure for Help -->
+<div id="modal-help" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-help">&times;</span>
+        <p>This is the Help section. Add your detailed text here...</p>
+    </div>
+</div>
+
+<!-- Modal Structure for About -->
+<div id="modal-about" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-about">&times;</span>
+        <p>
+            <h1 style="font-size: 22px; color: #333; text-align: center; margin-bottom: 15px;">About Us</h1>
+        <ol style="font-size: 16px; line-height: 1.5; margin: 0; padding-left: 20px; list-style-type: decimal;">
+            <li style="margin-bottom: 10px;">We are committed to providing top-notch services to our customers.</li>
+            <li style="margin-bottom: 10px;">Our team consists of experienced professionals in the industry.</li>
+            <li style="margin-bottom: 10px;">We prioritize customer satisfaction and strive for excellence.</li>
+            <li style="margin-bottom: 10px;">Innovation and creativity drive our approach to problem-solving.</li>
+            <li style="margin-bottom: 10px;">We value transparency and integrity in all our operations.</li>
+            <li style="margin-bottom: 10px;">Sustainability is at the heart of our business practices.</li>
+            <li style="margin-bottom: 10px;">We believe in continuous improvement and lifelong learning.</li>
+            <li style="margin-bottom: 10px;">Our mission is to empower clients through our solutions.</li>
+            <li style="margin-bottom: 10px;">We actively engage with our community to give back.</li>
+            <li style="margin-bottom: 10px;">Join us on our journey to make a positive impact in the world.</li>
+        </ol>
+        </p>
+    </div>
+</div>
+
+        
+
+      <script>
+        // Get all close buttons
+var closeButtons = document.querySelectorAll('.close');
+
+// Function to open a specific modal
+function openModal(modalId) {
+    var modal = document.getElementById(modalId);
+    modal.style.display = 'flex'; // Show the specific modal
+}
+
+// Close modal when close button is clicked
+closeButtons.forEach(function(button) {
+    button.onclick = function() {
+        var modalId = button.getAttribute('data-modal');
+        var modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+    }
+});
+
+// Close modal when clicking outside the modal content
+window.onclick = function(event) {
+    closeButtons.forEach(function(button) {
+        var modalId = button.getAttribute('data-modal');
+        var modal = document.getElementById(modalId);
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+// Event listeners for footer links
+document.querySelector('footer a[href="#"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    openModal('modal-privacy');
+});
+
+document.querySelector('footer a:nth-child(2)').addEventListener('click', function(e) {
+    e.preventDefault();
+    openModal('modal-terms');
+});
+
+document.querySelector('footer a:nth-child(3)').addEventListener('click', function(e) {
+    e.preventDefault();
+    openModal('modal-help');
+});
+
+document.querySelector('footer a:nth-child(4)').addEventListener('click', function(e) {
+    e.preventDefault();
+    openModal('modal-about');
+});
+
+      </script>
+        
+    </div>
+
+    <!-- Script for toggling password visibility -->
+   
+</body>
+</html>

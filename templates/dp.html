@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Food Items</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <style>
+        /* Add some basic styling to make the display look decent */
+        .food-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 20px;
+        }
+        .food-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Food Items</h1>
+    <div id="food-container"></div>
+
+    <script>
+        // Make an AJAX request to the Flask backend to retrieve the food items
+        fetch("/get_food_items")
+            .then(response => response.json())
+            .then(data => {
+                const foodContainer = document.getElementById("food-container");
+                data.forEach(item => {
+                    const foodDiv = document.createElement("div");
+                    foodDiv.className = "food-item";
+
+                    // Create HTML elements to display each food item
+                    const foodImg = document.createElement("img");
+                    foodImg.src = `data:image/jpeg;base64,${item.image}`;
+                    foodDiv.appendChild(foodImg);
+
+                    const foodName = document.createElement("h2");
+                    foodName.textContent = item.name;
+                    foodDiv.appendChild(foodName);
+
+                    const foodPrice = document.createElement("p");
+                    foodPrice.textContent = `Price: ${item.price}`;
+                    foodDiv.appendChild(foodPrice);
+
+                    const foodDiscount = document.createElement("p");
+                    foodDiscount.textContent = `Discount: ${item.discount}%`;
+                    foodDiv.appendChild(foodDiscount);
+
+                    const foodRating = document.createElement("p");
+                    foodRating.textContent = `Rating: ${item.rating}/5`;
+                    foodDiv.appendChild(foodRating);
+
+                    foodContainer.appendChild(foodDiv);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>

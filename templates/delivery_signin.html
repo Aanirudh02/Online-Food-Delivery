@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Suvai | Driver Registration</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <!-- Your CSS Styles here -->
+     <style>
+         body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ffe3e0, #ffb2a3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .welcome-message {
+            font-size: 2rem;
+            color: #FF6F61;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .message {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input[type="text"], .form-group input[type="file"], .form-group input[type="tel"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input[type="text"]:focus, .form-group input[type="file"]:focus, .form-group input[type="tel"]:focus {
+            border-color: #FF6F61;
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+            outline: none;
+        }
+        .tooltip {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            color: #fff;
+            background-color: #FF6F61;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            opacity: 1; /* Enable button */
+            pointer-events: auto; /* Enable clicks */
+        }
+        .submit-btn:hover {
+            background-color: #FF8A75;
+            transform: scale(1.05);
+        }
+        .success-message {
+            display: none;
+            font-size: 1.2rem;
+            color: #28a745;
+            margin-top: 1rem;
+            transition: opacity 0.5s;
+        }
+        .tick-gif {
+            display: none;
+            margin-top: 1rem;
+        }
+        .privacy-policy-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s;
+        }
+        .privacy-policy-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-content p {
+            margin-bottom: 1rem;
+        }
+        .modal-content button {
+            padding: 0.5rem 1rem;
+            background-color: #FF6F61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .modal-content button:hover {
+            background-color: #FF8A75;
+        }
+        .privacy-link {
+            color: #FF6F61;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+     </style>
+</head>
+<body>
+<div class="container">
+    <div class="welcome-message">Welcome to the Suvai Team!</div>
+    <div class="message">We're thrilled to have you onboard as a valued part of our food delivery team. Please fill out the form below.</div>
+  
+    <form id="driverForm" method="POST" action="/registe" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" placeholder="Enter your address" required>
+        </div>
+        <div class="form-group">
+            <label for="userPhoto">User Photo (1MB max)</label>
+            <input type="file" id="userPhoto" name="userPhoto" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="aadhaar">Aadhaar Card (1MB max)</label>
+            <input type="file" id="aadhaar" name="aadhaar" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="license">Driving License (1MB max)</label>
+            <input type="file" id="license" name="license" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="voterId">Voter ID (1MB max)</label>
+            <input type="file" id="voterId" name="voterId" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="privacyPolicyCheckbox" required>
+                I have read and agree to the Privacy Policy
+            </label>
+        </div>
+        <button type="submit" class="submit-btn">Join Suvai as a Driver</button>
+    </form>
+</div>
+</body>
+</html>

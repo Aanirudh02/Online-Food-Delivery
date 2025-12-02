@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Locator</title>
+    <link rel="icon" icon="x-image/icon" href="foddler.jpg">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+    
+        /* Background */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            background-attachment: fixed;
+            color: #333;
+        }
+    
+        /* Decorative Pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
+            opacity: 0.1; /* Adjust for subtlety */
+            z-index: -1;
+        }
+    
+        /* Form Container */
+        #formContainer {
+            width: 100%;
+            max-width: 750px;
+            background-color: #ffffffee;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+    
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    
+        /* Form Layout */
+        #restaurantForm {
+            display: flex;
+            gap: 20px;
+        }
+    
+        .form-column {
+            width: 50%;
+        }
+    
+        /* Form Elements */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+    
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #56a9f2;
+            box-shadow: 0 0 8px rgba(86, 169, 242, 0.4);
+        }
+    
+        /* Buttons */
+        button[type="button"],
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background-color: #56a9f2;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        button[type="button"]:hover,
+        button[type="submit"]:hover {
+            background-color: #4591da;
+        }
+    
+        /* Link Styling */
+        a#openMaps,
+        a[href="/view_restaurants"] {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            text-decoration: none;
+            background-color: #f2a654;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        a#openMaps:hover,
+        a[href="/view_restaurants"]:hover {
+            background-color: #e18e43;
+        }
+    </style>
+</head>
+<body>
+<div id="formContainer">
+    <h2>Enter Restaurant Information</h2>
+    
+    <form id="restaurantForm" method="post" action="/add_restaurant" enctype="multipart/form-data">
+        <div class="form-column">
+            <label for="name">Restaurant Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+    
+            <label for="place">Place:</label>
+            <input type="text" id="place" name="place" required><br><br>
+    
+            <label for="district">District:</label>
+            <input type="text" id="district" name="district" required><br><br>
+    
+            <button type="button" onclick="getCoordinates()">Get Coordinates</button><br><br>
+        </div>
+        <div class="form-column">
+            <label for="latitude">Latitude:</label>
+            <input type="text" id="latitude" name="latitude" readonly required><br><br>
+    
+            <label for="longitude">Longitude:</label>
+            <input type="text" id="longitude" name="longitude" readonly required><br><br>
+    
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+    
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required><br><br>
+    
+            <label for="timing">Timing (e.g., 7:00 AM - 10:30 PM):</label>
+            <input type="text" id="timing" name="timing" required><br><br>
+    
+            <button type="submit">Add Restaurant</button>
+            <a id="openMaps" href="#" target="_blank" style="display: none;">Open in Google Maps</a>
+            <br>
+            <a href="/view_restaurants">View All Restaurants</a>
+        </div>
+    </form>
+    
+</div>
+    <script>
+        function getCoordinates() {
+            const place = document.getElementById('place').value;
+            const district = document.getElementById('district').value;
+
+            if (place && district) {
+                console.log(`Fetching coordinates for: ${place}, ${district}`);
+                
+                fetch('/get_coordinates', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ place, district })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        console.log('Coordinates received:', data.latitude, data.longitude);
+                        document.getElementById('latitude').value = data.latitude;
+                        document.getElementById('longitude').value = data.longitude;
+
+                        // Update the link to Google Maps with the coordinates
+                        const mapsLink = `https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`;
+                        const openMapsLink = document.getElementById('openMaps');
+                        openMapsLink.href = mapsLink;
+                        openMapsLink.style.display = 'dotted'; // Show the link
+                    } else {
+                        alert(data.error || "Error fetching coordinates.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert("Please enter both place and district.");
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image and Hotel Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            background: #ffffff;
+            color: #333;
+        }
+
+        /* Canvas Background */
+        canvas#backgroundCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Form Section */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .form-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .left-side,
+        .right-side {
+            width: 48%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Labels */
+        label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Input Fields */
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus {
+            border-color: #6a9dfd;
+            box-shadow: 0px 0px 5px rgba(106, 157, 253, 0.5);
+            outline: none;
+        }
+
+        button,
+        input[type="submit"] {
+            background-color: #6a9dfd;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover,
+        input[type="submit"]:hover {
+            background-color: #4b81e8;
+            transform: scale(1.05);
+        }
+
+        input[readonly] {
+            background-color: #f0f0f0;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-content {
+                flex-direction: column;
+            }
+            .left-side, .right-side {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        async function getCoordinates() {
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+
+            if (city && district) {
+                const response = await fetch(`/get_coordinates?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}`);
+                const data = await response.json(); 
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('latitude').value = data.latitude;
+                    document.getElementById('longitude').value = data.longitude;
+                }
+            } else {
+                alert("Please fill in both city and district.");
+            }
+        }
+
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('backgroundCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const bubbles = [];
+            class Bubble {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 8 + 2;
+                    this.speedY = Math.random() * 1.5 + 0.5;
+                }
+                update() {
+                    this.y -= this.speedY;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+                draw() {
+                    ctx.fillStyle = 'rgba(106, 157, 253, 0.4)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            function createBubbles() {
+                for (let i = 0; i < 150; i++) {
+                    bubbles.push(new Bubble());
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                bubbles.forEach(bubble => {
+                    bubble.update();
+                    bubble.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            createBubbles();
+            animate();
+        });
+    </script>
+</head>
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    <div class="container">
+        <div class="form-section">
+            <h1>Upload Image and Hotel Details</h1>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <div class="form-content">
+                    <div class="left-side">
+                        <label for="city">City:</label>
+                        <input type="text" id="city" name="city" required>
+
+                        <label for="district">District:</label>
+                        <input type="text" id="district" name="district" required>
+
+                        <button type="button" onclick="getCoordinates()">Get Coordinates</button>
+
+                        <label for="latitude">Latitude:</label>
+                        <input type="text" id="latitude" name="latitude" readonly>
+
+                        <label for="longitude">Longitude:</label>
+                        <input type="text" id="longitude" name="longitude" readonly>
+                    </div>
+                    <div class="right-side">
+                        <label for="image">Choose Image:</label>
+                        <input type="file" name="image" required>
+
+                        <label for="hotel_name">Hotel Name:</label>
+                        <input type="text" name="hotel_name" required>
+
+                        <label for="rating">Rating (1-5):</label>
+                        <input type="number" name="rating" min="1" max="5" required>
+
+                        <label for="timing">Timing (e.g., 7:00 - 9:30):</label>
+                        <input type="text" name="timing" required>
+
+                        <input type="submit" value="Upload">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

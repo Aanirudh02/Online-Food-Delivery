@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Restaurant Images</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+</head>
+<body>
+    <h1>All Restaurant Images</h1>
+    <div>
+        {% for image in images %}
+            <div style="margin: 10px; display: inline-block;">
+                <img src="{{ url_for('get_image', image_id=image[0]) }}" width="150" height="150" alt="Restaurant Image {{ image[0] }}">
+                <p>ID: {{ image[0] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

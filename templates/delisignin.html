@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Suvai | Driver Registration</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming you put your CSS in a separate file -->
+</head>
+<body>
+<div class="container">
+    <div class="welcome-message">Welcome to the Suvai Team!</div>
+    <div class="message">We're thrilled to have you onboard as a valued part of our food delivery team. Please fill out the form below.</div>
+  
+    <form id="driverForm" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}">
+            <div class="tooltip">Format: 10-digit phone number</div>
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" placeholder="Enter your address" required>
+        </div>
+        <div class="form-group">
+            <label for="userPhoto">User Photo (1MB max)</label>
+            <input type="file" id="userPhoto" name="userPhoto" accept="image/*" required>
+            <div class="tooltip">Accepted format: image, max size 1MB</div>
+        </div>
+        <div class="form-group">
+            <label for="aadhaar">Aadhaar Card (1MB max)</label>
+            <input type="file" id="aadhaar" name="aadhaar" accept="image/*" required>
+            <div class="tooltip">Accepted format: image, max size 1MB</div>
+        </div>
+        <div class="form-group">
+            <label for="license">Driving License (1MB max)</label>
+            <input type="file" id="license" name="license" accept="image/*" required>
+            <div class="tooltip">Accepted format: image, max size 1MB</div>
+        </div>
+        <div class="form-group">
+            <label for="voterId">Voter ID (1MB max)</label>
+            <input type="file" id="voterId" name="voterId" accept="image/*" required>
+            <div class="tooltip">Accepted format: image, max size 1MB</div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="privacyPolicyCheckbox" required>
+                I have read and agree to the <span class="privacy-link" id="privacyPolicyLink">Privacy Policy</span>
+            </label>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">Join Suvai as a Driver</button>
+    </form>
+
+    <div class="success-message" id="successMessage">Thank you for joining the Suvai team!</div>
+    <img src="tick.gif" alt="Success" class="tick-gif" id="tickGif" />
+</div>
+</body>
+</html>

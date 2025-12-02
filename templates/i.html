@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Location Finder</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
+        h1 { color: #333; text-align: center; }
+        .container { max-width: 500px; margin: auto; padding: 20px; background: white; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); border-radius: 8px; }
+        input, button { display: block; width: 100%; margin-top: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #5b9bd5; color: white; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #4a8bc2; }
+        .result { margin-top: 20px; padding: 10px; background-color: #e0f7fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Restaurant Location Finder</h1>
+    <div class="container">
+        <input type="text" id="location" placeholder="Enter restaurant location" required>
+        <button onclick="fetchLocation()">Get Latitude & Longitude</button>
+        
+        <div id="result" class="result" style="display: none;">
+            <p><strong>Address:</strong> <span id="address"></span></p>
+            <p><strong>Latitude:</strong> <span id="latitude"></span></p>
+            <p><strong>Longitude:</strong> <span id="longitude"></span></p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLocation() {
+            const location = document.getElementById("location").value;
+            const resultDiv = document.getElementById("result");
+            resultDiv.style.display = "none"; // Hide result initially
+            
+            if (location) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:5000/get-location?location=${encodeURIComponent(location)}`);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById("address").innerText = data.address;
+                        document.getElementById("latitude").innerText = data.latitude;
+                        document.getElementById("longitude").innerText = data.longitude;
+                        resultDiv.style.display = "block"; // Show result div
+                    } else {
+                        alert("Location not found");
+                    }
+                } catch (error) {
+                    console.error("Error fetching location:", error);
+                    alert("An error occurred while fetching location data.");
+                }
+            } else {
+                alert("Please enter a location.");
+            }
+        }
+    </script>
+
+</body>
+</html>

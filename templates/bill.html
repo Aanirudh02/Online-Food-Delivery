@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            position: relative; /* Enable positioning of child elements */
+            height: 100vh; /* Make body full height */
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 80%;
+            margin: 0 auto 20px;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Total Amount Styles */
+        #total {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #333;
+        }
+        #total strong {
+            color: #4CAF50;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Pay Button Positioning */
+        #payBtn {
+            position: absolute; /* Position button absolutely */
+            bottom: 30px; /* Distance from bottom */
+            right: 20px; /* Distance from right */
+        }
+
+        /* Cash on Delivery Styles */
+        #cashOnDelivery {
+            position: absolute;
+            bottom: 70px; /* Adjusted to position above the Pay button */
+            right: 20px; /* Align with Pay button */
+            display: none; /* Initially hidden */
+            align-items: center;
+            background-color: #fff; /* White background for the checkbox */
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        #cashOnDelivery input[type="checkbox"] {
+            margin-right: 10px; /* Space between checkbox and label */
+        }
+
+        /* Popup Styles */
+        #popupMessage {
+            display: none; /* Initially hidden */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Ensure it's on top */
+        }
+        #overlay {
+            display: none; /* Initially hidden */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999; /* Behind the popup */
+        }
+
+        /* Job Application Link Styles */
+        #jobApplication {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 0.9em;
+            background: pink;
+        }
+        #jobApplication a {
+            color: #4CAF50;
+            text-decoration: none; /* Remove underline */
+        }
+        #jobApplication a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div id="jobApplication">
+        <a href="{{url_for('delivery_signin')}}" style="text-decoration:none;">Do you want to apply for a job?</a>
+    </div>
+    <h1>Your Bill</h1>
+    <div id="billTable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>${{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ (item.price * item.quantity)|round(2) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="total">
+            <strong>Total Amount: ${{ total_amount | round(2) }}</strong>
+        </div>
+        <div id="coupon">
+            <strong>Coupon Code: {{ coupon_code }}</strong>
+        </div>
+    </div>
+
+    <!-- Capture and Download Buttons -->
+    <button onclick="captureAndDownloadBill()">Capture & Download Bill</button>
+    
+    <!-- Cash on Delivery Option -->
+    <div id="cashOnDelivery">
+        <label>
+            <input type="checkbox" id="cashOption" checked> Cash On Delivery
+        </label>
+    </div>
+    
+    <!-- Pay Button -->
+    <button id="payBtn">Pay</button>
+
+    <!-- Popup Message -->
+    <div id="overlay"></div>
+    <div id="popupMessage">
+        <h2>Cash on Delivery Only!</h2>
+        <p>Thank you for choosing Cash on Delivery. You will be redirected shortly...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function captureAndDownloadBill() {
+            html2canvas(document.getElementById('billTable')).then(function(canvas) {
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'bill.png';
+                    link.click();
+                });
+            });
+        }
+
+        // Show popup message and redirect after 5 seconds
+        document.getElementById('payBtn').onclick = function() {
+            document.getElementById('cashOnDelivery').style.display = 'flex'; // Show cash on delivery
+            document.getElementById('overlay').style.display = 'block'; // Show overlay
+            document.getElementById('popupMessage').style.display = 'block'; // Show popup
+            setTimeout(function() {
+                window.location.href = "{{url_for('chkk')}}"; // Replace with your desired page
+            }, 5000); // Redirect after 5 seconds
+        };
+    </script>
+</body>
+</html>

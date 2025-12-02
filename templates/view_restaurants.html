@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Restaurants</title>
+    <style>
+        .edit-form {
+            display: none; /* Hide edit form initially */
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function toggleEditForm(restaurantId) {
+            var form = document.getElementById('edit-form-' + restaurantId);
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Restaurants</h1>
+    {% for restaurant in restaurants %}
+        <div>
+            <h2>{{ restaurant.name }}</h2>
+            <img src="data:image/jpeg;base64,{{ image.img_src }}" alt="Image" style="max-width:300px;" class="img-fluid">
+
+            <p>Place: {{ restaurant.place }}</p>
+            <p>District: {{ restaurant.district }}</p>
+            <p>Latitude: {{ restaurant.latitude }}</p>
+            <p>Longitude: {{ restaurant.longitude }}</p>
+            <p>Rating: {{ restaurant.rating }}</p>
+            <p>Timing: {{ restaurant.timing }}</p>
+
+            <!-- Google Maps link -->
+            <p>
+                <a href="https://www.google.com/maps?q={{ restaurant.latitude }},{{ restaurant.longitude }}" target="_blank">View on Google Maps</a>
+            </p>
+
+            <form action="{{ url_for('delete_restaurant', restaurant_id=restaurant.id) }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Are you sure you want to delete this restaurant?');">Remove</button>
+            </form>
+            <button onclick="toggleEditForm({{ restaurant.id }})">Edit</button>
+
+            <!-- Edit Form -->
+            <form id="edit-form-{{ restaurant.id }}" class="edit-form" action="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}" method="POST" enctype="multipart/form-data">
+                <label for="name">Name:</label>
+                <input type="text" name="name" value="{{ restaurant.name }}" required>
+                <br>
+                <label for="place">Place:</label>
+                <input type="text" name="place" value="{{ restaurant.place }}" required>
+                <br>
+                <label for="district">District:</label>
+                <input type="text" name="district" value="{{ restaurant.district }}" required>
+                <br>
+                <label for="latitude">Latitude:</label>
+                <input type="text" name="latitude" value="{{ restaurant.latitude }}" required>
+                <br>
+                <label for="longitude">Longitude:</label>
+                <input type="text" name="longitude" value="{{ restaurant.longitude }}" required>
+                <br>
+                <label for="rating">Rating:</label>
+                <input type="text" name="rating" value="{{ restaurant.rating }}" required>
+                <br>
+                <label for="timing">Timing:</label>
+                <input type="text" name="timing" value="{{ restaurant.timing }}" required>
+                <br>
+                <label for="image">Image:</label>
+                <input type="file" name="image">
+                <br>
+                <button type="submit">Update Restaurant</button>
+                <button type="button" onclick="toggleEditForm({{ restaurant.id }})">Cancel</button>
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>

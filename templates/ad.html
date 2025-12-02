@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Food Items</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f8ff;
+            color: #333;
+            
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff6347;
+            transition: color 0.3s ease;
+        }
+
+        h1:hover {
+            color: #ff4500;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+          
+        }
+
+        .input-container:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-container input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-container input:focus {
+            border-color: #ff6347;
+            outline: none;
+        }
+
+        .food-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .food-item {
+            width: 200px;
+            height: 450px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .food-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            margin: 10px 0;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6347;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff4500;
+            transform: translateY(-2px);
+        }
+
+        span {
+            margin: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        span:hover {
+            color: #ff6347;
+        }
+        .top-corner-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.top-corner-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+    </style>
+</head>
+<body>
+    <a href="{{url_for('delivery_dashboard')}}" class="top-corner-button">View Job Requests</a>
+
+    <h1>Add/Edit Food Items</h1>
+
+    <div class="input-container">
+        <form action="/action_taker" method="POST" enctype="multipart/form-data">
+            <input type="text" name="food" id="new-food" placeholder="Food Name" required>
+            <input type="file" name="img" id="food-image" accept="image/*" required>
+            <input type="number" name="price" id="food-price" placeholder="Price" required>
+            <input type="number" name="discount" id="food-discount" placeholder="Discount (%)" oninput="calculateDiscount()" required>
+            <span id="discounted-price" name="discount_price"></span><br>
+            <input type="number" name="rating" id="food-rating" min="1" max="5" placeholder="Rating (1-5)" required>
+            <button type="button" onclick="addFood()">Add Food</button>
+            <a href="{{url_for('indix')}}" style="text-decoration: none;color:white;"><button>Display</a> </button>
+
+        </form>
+
+    </div>
+
+    <div id="food-container" class="food-container"></div>
+
+    <script>
+        let foodItems = [];
+        let editIndex = -1;
+
+        window.onload = function() {
+            const storedFoodItems = localStorage.getItem("foodItems");
+            if (storedFoodItems) {
+                foodItems = JSON.parse(storedFoodItems);
+            }
+
+            const storedEditIndex = localStorage.getItem("editIndex");
+            if (storedEditIndex !== null) {
+                editIndex = parseInt(storedEditIndex);
+                loadEditItem();
+                localStorage.removeItem("editIndex");
+            }
+
+            displayFoodItems();
+        };
+
+        function loadEditItem() {
+            const item = foodItems[editIndex];
+            document.getElementById("new-food").value = item.name;
+            document.getElementById("food-price").value = item.price;
+            document.getElementById("food-discount").value = item.discount;
+            document.getElementById("food-rating").value = item.rating;
+            calculateDiscount();
+        }
+
+        function calculateDiscount() {
+            const price = document.getElementById("food-price").value;
+            const discount = document.getElementById("food-discount").value;
+
+            if (price && discount) {
+                const discountedPrice = price - (price * (discount / 100));
+                document.getElementById("discounted-price").innerText = `Discounted Price: $${discountedPrice.toFixed(2)}`;
+            } else {
+                document.getElementById("discounted-price").innerText = "";
+            }
+        }
+
+        function addFood() {
+    const newFood = document.getElementById("new-food").value;
+    const foodImageFile = document.getElementById("food-image").files[0];
+    const foodPrice = document.getElementById("food-price").value;
+    const foodDiscount = document.getElementById("food-discount").value;
+    const foodRating = document.getElementById("food-rating").value;
+
+    if (newFood && foodImageFile && foodPrice && foodDiscount && foodRating) {
+        const formData = new FormData();
+        formData.append('food', newFood);
+        formData.append('img', foodImageFile);
+        formData.append('price', foodPrice);
+        formData.append('discount', foodDiscount);
+        formData.append('rating', foodRating);
+        formData.append('editIndex', editIndex); // Send the edit index
+
+        fetch('/action_taker', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            displayFoodItems(); // Refresh the food items display
+        })
+        .catch(error => console.error('Error:', error));
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const foodItem = {
+                name: newFood,
+                image: e.target.result,
+                price: foodPrice,
+                discount: foodDiscount,
+                discountedPrice: (foodPrice - (foodPrice * (foodDiscount / 100))).toFixed(2),
+                rating: foodRating
+            };
+
+            if (editIndex === -1) {
+                foodItems.push(foodItem); // Add new item
+            } else {
+                foodItems[editIndex] = foodItem; // Update existing item
+                editIndex = -1;
+            }
+
+            clearInputs();
+            displayFoodItems();
+        };
+        reader.readAsDataURL(foodImageFile);
+    } else {
+        alert("Please fill in all fields and upload an image.");
+    }
+}
+
+        function clearInputs() {
+            document.getElementById("new-food").value = "";
+            document.getElementById("food-image").value = "";
+            document.getElementById("food-price").value = "";
+            document.getElementById("food-discount").value = "";
+            document.getElementById("food-rating").value = "";
+            document.getElementById("discounted-price").innerText = "";
+        }
+
+        function displayFoodItems() {
+            const foodContainer = document.getElementById("food-container");
+            foodContainer.innerHTML = "";
+
+            foodItems.forEach((item, index) => {
+                const foodDiv = document.createElement("div");
+                foodDiv.className = "food-item";
+
+                const foodImg = document.createElement("img");
+                foodImg.src = item.image;
+                foodImg.alt = item.name;
+                foodDiv.appendChild(foodImg);
+
+                const foodText = document.createElement("span");
+                foodText.innerText = item.name;
+                foodDiv.appendChild(foodText);
+
+                const priceText = document.createElement("span");
+                priceText.innerText = `Price: $${item.price}`;
+                foodDiv.appendChild(priceText);
+
+                const discountText = document.createElement("span");
+                discountText.innerText = `Discount: ${item.discount}%`;
+                foodDiv.appendChild(discountText);
+
+                const discountedPriceText = document.createElement("span");
+                discountedPriceText.innerText = `Discounted Price: $${item.discountedPrice}`;
+                discountedPriceText.style.color = 'green';
+                foodDiv.appendChild(discountedPriceText);
+
+                const ratingText = document.createElement("span");
+                ratingText.innerText = `Rating: ${item.rating}/5`;
+                foodDiv.appendChild(ratingText);
+
+                const editButton = document.createElement("button");
+                editButton.innerText = "Edit";
+                editButton.onclick = () => editFood(index);
+                foodDiv.appendChild(editButton);
+
+                foodContainer.appendChild(foodDiv);
+            });
+        }
+
+        function editFood(index) {
+    const item = foodItems[index];
+    document.getElementById("new-food").value = item.name;
+    document.getElementById("food-price").value = item.price;
+    document.getElementById("food-discount").value = item.discount;
+    document.getElementById("food-rating").value = item.rating;
+
+    // Set the editIndex to the index of the item being edited
+    editIndex = index;
+    calculateDiscount(); // Calculate the discount for the loaded item
+}
+
+      
+    </script>
+
+</body>
+</html>

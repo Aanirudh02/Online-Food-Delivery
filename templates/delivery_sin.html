@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Signup | Suvai</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: #FFE3E0;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+    }
+
+    .left-section {
+      flex: 1;
+      background: linear-gradient(to bottom right, #FF6F61, #FFB2A3);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    }
+
+    .left-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      overflow: hidden; /* to keep the typing effect smooth */
+      white-space: nowrap;
+      border-right: 4px solid #fff; /* cursor effect */
+      animation: typing 3s steps(30, end), blink 0.7s step-end infinite alternate;
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 80%;
+      }
+    }
+
+    @keyframes blink {
+      from, to {
+        border-color: transparent;
+      }
+      50% {
+        border-color: white;
+      }
+    }
+
+    .left-section p {
+      font-size: 1.2rem;
+      max-width: 300px;
+      text-align: center;
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
+
+    .right-section {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .form-container {
+      width: 80%;
+      max-width: 400px;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .form-header {
+      font-size: 1.5rem;
+      color: #FF6F61;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+
+    .input-field {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #FF6F61;
+      padding: 0.5rem;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      color: #333;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-bottom-color: #FFB2A3;
+    }
+
+    .btn-login, .btn-signup {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #FF6F61;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .btn-login:hover, .btn-signup:hover {
+      background-color: #FF8A75;
+    }
+
+    .toggle-link {
+      margin-top: 1rem;
+      color: #FF6F61;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .toggle-link:hover {
+      color: #FF8A75;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-section">
+      <h1>Welcome to Suvai</h1>
+      <p>Experience the finest flavors delivered straight to your door.</p>
+    </div>
+
+    <div class="right-section">
+      <div class="form-container" id="formContainer">
+        <div class="form-header" id="formHeader">Login to Suvai</div>
+        <form class="form-content" action="{{url_for('login')}}" method="post">
+          <input type="text" class="input-field" name="username" placeholder="Username" required>
+          <input type="password" class="input-field" name="password" placeholder="Password" required>
+          <button type="submit" class="btn-login">Login</button>
+        </form>
+        <a class="toggle-link" onclick="toggleForm()">Don't have an account? Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleForm() {
+      const formContainer = document.getElementById("formContainer");
+      formContainer.innerHTML = formContainer.innerHTML.includes("Login")
+        ? `<div class="form-header">Sign Up for Suvai</div>
+           <form class="form-content" action="{{url_for('signup')}}" method="post">
+             <input type="text" class="input-field" name="username" placeholder="Username" required>
+             <input type="email" class="input-field" name="email" placeholder="Email" required>
+             <input type="password" class="input-field" name="password" placeholder="Password" required>
+             <button type="submit" class="btn-signup">Sign Up</button>
+           </form>
+           <a class="toggle-link" onclick="toggleForm()">Already have an account? Login</a>`
+        : `<div class="form-header">Login to Suvai</div>
+           <form class="form-content" action="{{url_for('login')}}" method="post">
+             <input type="text" class="input-field" name="username" placeholder="Username" required>
+             <input type="password" class="input-field" name="password" placeholder="Password" required>
+             <button type="submit" class="btn-login">Login</button>
+           </form>
+           <a class="toggle-link" onclick="toggleForm()">Don't have an account? Sign up</a>`;
+    }
+  </script>
+</body>
+</html>

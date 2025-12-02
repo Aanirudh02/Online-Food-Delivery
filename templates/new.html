@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Escape</title>
+    <style>
+        body {
+            background-color: #ffcccb; /* Soft pink background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #c71585; /* Medium violet red */
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .image-container img {
+            width: 300px; /* Set width for images */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+            transition: transform 0.3s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        .top-corner-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.top-corner-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+    </style>
+</head>
+<body>
+
+    <div>
+        <a href="{{url_for('delivery_dashboard')}}" class="top-corner-button">View Job Requests</a>
+        <h1>Choose what would you like to add ?</h1>
+        <div class="image-container">
+            <a href="{{url_for('ad')}}">
+                <img src="{{ url_for('static', filename='images/foood.webp') }}" alt="Add Food">
+            </a>
+            <a href="{{url_for('upload_image')}}">
+                <img src="{{ url_for('static', filename='images/hotelll.webp') }}" alt="Add Hotels">
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delivery Dashboard</title>
+    <link rel="icon" icon="x-image/icon" href="Food-Plate.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+        }
+        .dashboard-container {
+            width: 90%;
+            margin: auto;
+            padding-top: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background: #ffffff;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+        th {
+            background-color: #ff6f61;
+            color: #ffffff;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .action-btn {
+            background-color: #ff6f61;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .action-btn.remove {
+            background-color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <h1>Driver Information</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>User Photo</th>
+                <th>Aadhaar Card</th>
+                <th>Driving License</th>
+                <th>Voter ID</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for driver in drivers %}
+            <tr>
+                <td>{{ driver['id'] }}</td>
+                <td>{{ driver['full_name'] }}</td>
+                <td>{{ driver['phone_number'] }}</td>
+                <td>{{ driver['address'] }}</td>
+                <td>
+                    <img src="data:image/jpeg;base64,{{ driver['user_photo']|b64encode }}" alt="User Photo">
+                </td>
+                <td>
+                    <img src="data:image/jpeg;base64,{{ driver['aadhaar']|b64encode }}" alt="Aadhaar Card">
+                </td>
+                <td>
+                    <img src="data:image/jpeg;base64,{{ driver['driving_license']|b64encode }}" alt="Driving License">
+                </td>
+                <td>
+                    <img src="data:image/jpeg;base64,{{ driver['voter_id']|b64encode }}" alt="Voter ID">
+                </td>
+                <td>{{ driver['created_at'] }}</td>
+                <td>
+                    <form action="{{ url_for('delete_driver', driver_id=driver['id']) }}" method="post" style="display:inline;">
+                        <button type="submit" class="action-btn remove">Remove</button>
+                    </form>
+                    <button class="action-btn select">Select</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

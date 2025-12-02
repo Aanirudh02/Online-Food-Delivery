@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send OTP | Secure Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    background: linear-gradient(135deg, #2193b0, #016930);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background Diagonal Shapes */
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.diagonal {
+    position: absolute;
+    width: 120%;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    transform: skewY(-12deg);
+}
+
+.diagonal1 {
+    top: -50px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.diagonal2 {
+    top: 200px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.diagonal3 {
+    top: 450px;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+/* Glass Effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    text-align: center;
+    width: 350px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+/* Form Styling */
+.form-box h2 {
+    font-size: 24px;
+    color: rgb(162, 97, 4);
+    margin-bottom: 20px;
+}
+
+.form-box p {
+    font-size: 14px;
+    color: rgb(207, 0, 0);
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #6dd5ed, #a421b0);
+    transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .glass-effect {
+        width: 300px;
+    }
+
+    .form-box h2 {
+        font-size: 22px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .btn {
+        font-size: 16px;
+    }
+}
+
+.modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+        }
+        /* OTP Modal Design Enhancements */
+.otp-modal-content {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 350px;
+    padding: 40px;
+    text-align: center;
+    animation: slideIn 0.5s ease-in-out;
+    position: relative;
+}
+
+.otp-modal-content h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.otp-input-group {
+    margin-bottom: 20px;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.otp-input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.otp-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    background: linear-gradient(135deg, #a821b0, #e94057);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.otp-btn:hover {
+    background: linear-gradient(135deg, #e94057, #f27121);
+    transform: scale(1.05);
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #f00;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .otp-modal-content {
+        width: 300px;
+        padding: 30px;
+    }
+
+    .otp-btn {
+        font-size: 16px;
+    }
+
+    .otp-input {
+        font-size: 14px;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="background">
+        <!-- Diagonal Shapes -->
+        <div class="diagonal diagonal1"></div>
+        <div class="diagonal diagonal2"></div>
+        <div class="diagonal diagonal3"></div>
+    </div>
+
+    <div class="container">
+        <div class="form-box glass-effect">
+            <h2>Verify Your Email</h2>
+            <p>Enter your email to receive the OTP for login</p>
+            <form action="{{url_for('otp')}}" method="POST" id="otpForm">
+                <div class="input-group">
+                    <input type="email" name="email"id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn">Send OTP</button>
+            </form>
+        </div>
+    </div>
+        <!-- Modal for OTP Verification -->
+<div id="otpModal" class="modal">
+    <div class="modal-content glass-effect otp-modal-content">
+        <span class="close" onclick="document.getElementById('otpModal').style.display='none'">&times;</span>
+        <h2>Enter OTP</h2>
+        <form action="/verify_otp" method="POST">
+            <div class="input-group otp-input-group">
+                <input type="text" name="otpInput" required placeholder="Enter OTP" class="form-control otp-input" />
+            </div>
+            <button type="submit" class="btn otp-btn">Verify OTP</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Show modal when OTP is sent successfully
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const otpSent = urlParams.has('otp_sent'); // Check if 'otp_sent' parameter exists
+
+        if (otpSent) {
+            document.getElementById('otpModal').style.display = 'block';
+        }
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        var modal = document.getElementById('otpModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>

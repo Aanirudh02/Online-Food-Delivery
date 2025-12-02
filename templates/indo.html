@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Items</title>
+    <style>
+        body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Title styling */
+    h1 {
+        color: #f76b1c;
+        font-size: 36px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    /* Container for food items */
+    #food-items {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        max-width: 1200px;
+    }
+
+    /* Food item card styling */
+    .item {
+        background-color: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        width: 250px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Hover effect for food item cards */
+    .item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Food item image styling */
+    .item img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        transition: transform 0.4s ease;
+    }
+
+    /* Zoom effect on image hover */
+    .item:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Food item heading (name) */
+    .item h3 {
+        color: #333;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    /* Price and discount information */
+    .item p {
+        font-size: 16px;
+        color: #777;
+        margin: 8px 0;
+    }
+
+    /* Styling for discounted price */
+    .item .discounted-price {
+        color: #f76b1c;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /* Badge for discount percentage */
+    .item .discount-badge {
+        position: relative;
+        top: -15px;
+        right: -15px;
+        background-color: #f76b1c;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Rating stars styling */
+    .item .stars {
+        color: #ffd700;
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    /* No image available placeholder */
+    .item .no-image {
+        font-size: 14px;
+        color: #bbb;
+        margin: 10px 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        width: 100%;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <h1>Food Items</h1>
+    <div id="food-items">
+        {% for item in food_items %}
+        <div class="item">
+            <h3>{{ item.name }}</h3>
+            <p>Price: ${{ '{:.2f}'.format(item.price) }}</p>
+            {% if item.discount %}
+                <p>Discount: {{ item.discount }}%</p>
+                <p>Discounted Price: ${{ '{:.2f}'.format(item.discounted_price) }}</p>
+            {% endif %}
+            <p>Rating: {{ '{:.1f}'.format(item.rating) }} stars</p>
+            {% if item.image_src %}
+                <img src="{{ item.image_src }}" alt="{{ item.name }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover the World with Your Taste</title>
+    <link rel="icon" href="cake.jpg">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1a1a;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        @keyframes rotating {
+            to { transform: rotate(1turn); }
+        }
+
+        @keyframes de-rotating {
+            from, to { transform: rotate(0deg) scale(0.5); }
+            50% { transform: rotate(-360deg) scale(1.2); }
+        }
+
+        .hidden { display: none; }
+        
+        .loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: de-rotating 3s ease-in-out infinite;
+        }
+
+        .loader img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .content {
+            display: none;
+            color: #f8f8f8;
+            text-align: center;
+            font-size: 3em;
+            width: 80%;
+            height: 95%;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+        }
+
+        .content img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #f2f2f2;
+            text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+    <script>
+        const loadingTime = 3000;
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('hidden');
+                document.querySelector('.content').style.display = 'block';
+                setTimeout(function() {
+                    window.location.href = '/login_page'; // Adjust to your route
+                }, 2500); 
+            }, loadingTime);
+        });
+    </script>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <img src="{{ url_for('static', filename='images/coin.gif') }}" alt="Loading...">
+    </div>
+    <div class="content">
+        <img src="{{ url_for('static', filename='images/1ss.png') }}" alt="Discover the World with Your Taste">
+        <div class="message">Discover the World with Your Taste</div>
+    </div>
+</body>
+</html>

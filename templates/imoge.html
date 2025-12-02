@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        img {
+            max-width: 200px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stored Images</h1>
+    <a href="/">Upload New Image</a>
+    <div>
+        {% for id, name in images %}
+            <div>
+                <h3>{{ name }}</h3>
+                <img src="{{ url_for('get_image', image_id=id) }}" alt="{{ name }}">
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

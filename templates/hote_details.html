@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Details</title>
+</head>
+<body>
+    <h1>Hotel Details</h1>
+    {% for hotel in hotels %}
+        <h2>{{ hotel[1] }}</h2>
+        <img src="{{ url_for('get_image', image_id=hotel[0]) }}" alt="Hotel Image" width="300"><br>
+        <p><strong>City:</strong> {{ hotel[2] }}</p>
+        <p><strong>District:</strong> {{ hotel[3] }}</p>
+        <p><strong>Latitude:</strong> {{ hotel[4] }}</p>
+        <p><strong>Longitude:</strong> {{ hotel[5] }}</p>
+        <p><strong>Rating:</strong> {{ hotel[6] }}</p>
+        <p><strong>Timing:</strong> {{ hotel[7] }}</p>
+        <a href="{{ hotel[8] }}" target="_blank">View on Google Maps</a>
+        <hr>
+    {% endfor %}
+</body>
+</html>

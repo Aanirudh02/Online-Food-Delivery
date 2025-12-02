@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Images</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .image-container {
+            border: 1px solid #ccc; /* Optional: Add a border */
+            border-radius: 8px; /* Optional: Rounded corners */
+            overflow: hidden; /* To ensure rounded corners show correctly */
+            text-align: center; /* Center text within container */
+            margin-bottom: 20px; /* Space between rows */
+        }
+
+        .image-container img {
+            width: 100%; /* Make image fill the container */
+            height: 200px; /* Uniform height for all images */
+            object-fit: cover; /* Maintain aspect ratio and cover the space */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Hotel Images</h1>
+        <div class="row">
+            {% for image in images %}
+                <div class="col-md-4"> <!-- Using col-md-4 for three columns -->
+                    <div class="image-container">
+                        <h2>{{ image.hotel_name }}</h2>
+                        <p>City: {{ image.city }}</p>
+                        <p>District: {{ image.district }}</p>
+                        <p>Rating: {{ image.rating }}</p>
+                        <p>Timing: {{ image.timing }}</p>
+                        <p>Location: <a href="{{ image.maps_link }}" target="_blank">View on Google Maps</a></p>
+                        <img src="data:image/jpeg;base64,{{ image.img_src }}" alt="{{ image.hotel_name }}">
+                    </div>
+                    <form action="{{ url_for('remove_image', image_id=image.id) }}" method="post" class="remove-btn">
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

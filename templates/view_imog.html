@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Imog</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Navbar and general styles */
+        .navbar {
+            background-color: #ff6347; /* Tomato color for brand consistency */
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #fff;
+        }
+        .navbar-brand:hover {
+            color: #ffeeba; /* Light golden hover effect */
+        }
+        .navbar .btn-outline-primary, .navbar .btn-outline-primary:hover {
+            color: #fff;
+            border-color: #ffeeba;
+        }
+        .navbar .btn-outline-primary:hover {
+            background-color: #ffeeba;
+        }
+
+        /* Horizontal slider */
+        .horizontal-slider-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            margin: auto;
+        }
+        .horizontal-slider {
+            display: flex;
+            animation: slide 25s infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .horizontal-slide img {
+            filter: grayscale(80%); /* Grayscale effect */
+            transition: filter 0.5s ease; /* Smooth transition on hover */
+        }
+        .horizontal-slide img:hover {
+            filter: grayscale(0); /* Remove grayscale on hover */
+        }
+
+        /* Keyframe animation for slider */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-100%); }
+            40% { transform: translateX(-200%); }
+            60% { transform: translateX(-300%); }
+            80% { transform: translateX(-400%); }
+            100% { transform: translateX(-500%); }
+        }
+
+        /* Restaurant cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .card-title, .card-text {
+            color: #333;
+        }
+        .card img {
+            transition: transform 0.4s ease;
+        }
+        .card:hover img {
+            transform: scale(1.1); /* Zoom effect */
+        }
+
+        /* Buttons */
+        .btn-success, .btn-warning, .btn-danger {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-success:hover, .btn-warning:hover, .btn-danger:hover {
+            transform: scale(1.1); /* Slight enlarge on hover */
+        }
+        .btn-primary {
+            background-color: #ff6347;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #ff8562;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+        }
+        footer p {
+            margin: 0;
+        }
+
+        .image-container {
+            border: 1px solid #ccc; /* Optional: Add a border */
+            border-radius: 8px; /* Optional: Rounded corners */
+            overflow: hidden; /* To ensure rounded corners show correctly */
+            text-align: center; /* Center text within container */
+            margin-bottom: 20px; /* Space between rows */
+        }
+
+        .image-container img {
+            width: 100%; /* Make image fill the container */
+            height: 200px; /* Uniform height for all images */
+            object-fit: cover; /* Maintain aspect ratio and cover the space */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar with logo, search, and profile link -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-top mr-2">
+            Suvai
+        </a>
+        <!-- Search bar -->
+        <form class="form-inline mx-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search restaurants..." aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <!-- Profile link -->
+        <div class="ml-auto">
+            <a href="profile.html" class="btn btn-outline-primary">Profile</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Horizontal Image Slider -->
+<div class="horizontal-slider-container mt-4">
+    <div class="horizontal-slider">
+        <div class="horizontal-slide"><img src="{{ url_for('static', filename='images/p1.jpeg') }}" class="img-fluid" alt="Image 1"></div>
+        <div class="horizontal-slide"><img src="{{ url_for('static', filename='images/p2.jpeg') }}" class="img-fluid" alt="Image 2"></div>
+        <div class="horizontal-slide"><img src="{{ url_for('static', filename='images/p3.jpeg') }}" class="img-fluid" alt="Image 3"></div>
+        <div class="horizontal-slide"><img src="{{ url_for('static', filename='images/p4.jpeg') }}" class="img-fluid" alt="Image 4"></div>
+        <div class="horizontal-slide"><img src="{{ url_for('static', filename='images/p5.jpeg') }}" class="img-fluid" alt="Image 5"></div>
+    </div>
+</div>
+
+<!-- Restaurant Listings Section -->
+<div class="container my-5">
+    <h2 class="text-center">Our Restaurants</h2>
+    <!-- Add Restaurant button (for admin) -->
+    <div class="text-right mb-3">
+        <a href="add_restaurant.html" class="btn btn-primary">Our Best Restaurants below </a>
+    </div>
+    
+    <!-- Restaurant Display -->
+    
+
+    <div class="container">
+        <h1 class="text-center my-4">Imog Gallery</h1>
+        <div class="row">
+            {% for image in images %}
+                <div class="col-md-4"> <!-- Using col-md-4 for three columns -->
+                    <div class="image-container">
+                        <a href="{{ url_for('display_food') }}" style="text-decoration: none; background: red; font-weight: bold;" onmouseover="this.style.backgroundColor='pink';" onmouseout="this.style.backgroundColor='red';">
+                            <h2>{{ image.hotel_name }}</h2>
+                        </a>
+                        
+                        <p>City: {{ image.city }}</p>
+                        <p>District: {{ image.district }}</p>
+                        <p>Rating: {{ image.rating }}</p>
+                        <p>Timing: {{ image.timing }}</p>
+                        <p>Location: <a href="{{ image.maps_link }}" target="_blank">View on Google Maps</a></p>
+                        <a href="{{url_for('display_food')}}" style="text-decoration: none;"><img src="data:image/jpeg;base64,{{ image.img_src }}" alt="{{ image.hotel_name }}"></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
