@@ -19,16 +19,18 @@ from nbformat import from_dict
 
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev_key')
 
 
 # Database connection configuration
 db_config = {
-    'user': 'root',
-    'password': 'aanirudh_02',
-    'host': 'localhost',
+    'user': 'root',                  # replace if your Railway username is different
+    'password': 'ElqhWjfUvehDAAWLnKPTwgRcRxzSTOzf',  # replace with your Railway password
+    'host': 'shinkansen.proxy.rlwy.net',
+    'port': 48290,
     'database': 'aani'
 }
+
 
 def get_db_connection():
     conn = mysql.connector.connect(**db_config)
